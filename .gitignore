@@ -1,0 +1,26 @@
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+
+# Job-application docs — client names, referees, healthcare internals
+Praveen_Kehelella_Resume.pdf
+Praveen_Kehelella_Cover_Letter.pdf
+Praveen_Kehelella_Cover_Letter.docx
+
+# Live-product stills with admin UI, booking IDs, or third-party PII
+completed_work/excellements/4.png
+completed_work/excellements/5.png
+completed_work/excellements/6.png
+completed_work/excellements/7.png
+completed_work/classic_barbershop/classic_barber_shop_booking_4.png
+completed_work/classic_barbershop/classic_barber_shop_booking_5.png
+completed_work/production_pulse_monitor/production_pulse_monitor_0.png
+completed_work/production_pulse_monitor/production_pulse_monitor_1.png
+completed_work/production_pulse_monitor/production_pulse_monitor_2.png
+completed_work/production_pulse_monitor/production_pulse_monitor_3.png
