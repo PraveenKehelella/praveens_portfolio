@@ -1,0 +1,77 @@
+[
+  {
+    "id": "classic_barbershop",
+    "title": "Classic Barbershop",
+    "summary": "Live barbershop product — React, TypeScript, and Vite on the front, Dockerized Django REST and PostgreSQL on the back, with a five-step booking wizard and staff admin.",
+    "tags": ["React", "Django", "Live"],
+    "url": "https://www.classicbarber.store/",
+    "thumb": "completed_work/classic_barbershop/thumb.webp",
+    "slug": "classic_barbershop"
+  },
+  {
+    "id": "dominex_engineering",
+    "title": "Dominex Engineering",
+    "summary": "Engineering studio site for Dominex — project presence built as a modern marketing frontend.",
+    "tags": ["Frontend"],
+    "url": "https://dominex-automation.vercel.app/",
+    "thumb": "completed_work/dominex_engineering/thumb.webp",
+    "slug": "dominex_engineering"
+  },
+  {
+    "id": "excellements",
+    "title": "Excellements",
+    "summary": "Human performance intelligence platform for coaches and athletes — React + TypeScript SPA with a Django REST API and PostgreSQL.",
+    "tags": ["React", "Django", "PostgreSQL"],
+    "url": "https://excellements.com/",
+    "thumb": "completed_work/excellements/thumb.webp",
+    "slug": "excellements"
+  },
+  {
+    "id": "omnigate_ai_portfolio",
+    "title": "Omnigate AI Portfolio",
+    "summary": "Marketing and product site for Omnigate AI, alongside production agentic RAG work for healthcare IT.",
+    "tags": ["RAG", "MCP", "Healthcare"],
+    "url": "https://omnigate.dev/",
+    "thumb": "completed_work/omnigate_ai_portfolio/thumb.webp",
+    "slug": "omnigate_ai_portfolio"
+  },
+  {
+    "id": "production_pulse_monitor",
+    "title": "Production Pulse Monitor",
+    "summary": "Vite + React frontend with a FastAPI backend and SQLite — production monitoring deployed on Vercel and a VPS.",
+    "tags": ["React", "FastAPI"],
+    "url": "https://production-pulse-monitor.vercel.app/",
+    "thumb": "completed_work/production_pulse_monitor/thumb.webp",
+    "slug": "production_pulse_monitor"
+  },
+  {
+    "id": "healthcare-support-bot",
+    "title": "Voice-Enabled Healthcare Support Bot",
+    "summary": "Production agentic platform for hospital IT — MCP, FastAPI, retrieval-backed support, with live conversation tests graded by an LLM judge.",
+    "tags": ["RAG", "MCP", "Healthcare", "Production"]
+  },
+  {
+    "id": "procurement-explorer",
+    "title": "Procurement Data Explorer",
+    "summary": "A SaaS product for structuring and querying procurement data at scale — from raw tables to a searchable, explorable interface for B2B buyers.",
+    "tags": ["SaaS", "SQL", "Data Tooling"]
+  },
+  {
+    "id": "knowledge-graph-pipeline",
+    "title": "Knowledge Graph Pipeline",
+    "summary": "An automated pipeline that transforms long-form video transcripts into a structured, navigable knowledge graph.",
+    "tags": ["Automation", "NLP", "Pipelines"]
+  },
+  {
+    "id": "field-app",
+    "title": "Cross-Platform Field App",
+    "summary": "A React Native application with BLE hardware integration — bridging mobile software and embedded devices.",
+    "tags": ["React Native", "BLE", "Mobile"]
+  },
+  {
+    "id": "robotic-wheelchair",
+    "title": "Smart Robotic Wheelchair",
+    "summary": "Research platform for socially compliant side-by-side navigation — ROS Kinetic, Hokuyo LiDAR, and new algorithms for robot–human pairs, designed and built at SLIIT.",
+    "tags": ["ROS", "LiDAR", "Research"]
+  }
+]

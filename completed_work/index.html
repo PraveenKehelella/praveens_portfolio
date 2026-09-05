@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Completed work — Praveen Kehelella</title>
+<script>(function(){try{if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+<link rel="preload" href="../fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+  @font-face{
+    font-family:'Space Grotesk';
+    font-style:normal;
+    font-weight:400 700;
+    font-display:swap;
+    src:url('../fonts/space-grotesk.woff2') format('woff2');
+  }
+  @font-face{
+    font-family:'JetBrains Mono';
+    font-style:normal;
+    font-weight:400;
+    font-display:swap;
+    src:url('../fonts/jetbrains-mono.woff2') format('woff2');
+  }
+  :root{
+    --black:#0a0a0a;
+    --off-white:#f2f1ec;
+    --gray:#8a8a85;
+    --gray-dim:#4a4a47;
+    --hairline:rgba(242,241,236,0.14);
+    --lift:rgba(242,241,236,0.025);
+    --lift-strong:rgba(242,241,236,0.32);
+    --display:'Space Grotesk', sans-serif;
+    --mono:'JetBrains Mono', monospace;
+    color-scheme:dark;
+  }
+  html[data-theme="light"]{
+    --black:#f2f1ec;
+    --off-white:#0a0a0a;
+    --gray:#75757a;
+    --gray-dim:#b5b5b8;
+    --hairline:rgba(10,10,10,0.14);
+    --lift:rgba(10,10,10,0.04);
+    --lift-strong:rgba(10,10,10,0.32);
+    color-scheme:light;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:var(--black);
+    color:var(--off-white);
+    font-family:var(--display);
+    -webkit-font-smoothing:antialiased;
+    transition:background .35s ease, color .35s ease;
+  }
+  a{color:inherit; text-decoration:none;}
+  :focus-visible{outline:1.5px solid var(--off-white); outline-offset:4px;}
+  .grain{
+    position:fixed; inset:0; pointer-events:none; z-index:9999; opacity:0.035; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .container{max-width:1120px; margin:0 auto; padding:0 32px;}
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    height:var(--nav-h);
+    display:grid; grid-template-columns:1fr auto 1fr;
+    align-items:center; padding:0 32px;
+    font-family:var(--mono); font-size:12.5px; letter-spacing:0.03em;
+    background:var(--black);
+    text-transform:uppercase;
+  }
+  .nav-mark{display:flex; align-items:center; gap:8px; justify-self:start; grid-column:1;}
+  .nav-dot{width:6px; height:6px; border-radius:50%; background:var(--off-white);}
+  .nav-links{display:none; justify-content:flex-end; gap:22px; justify-self:end; grid-column:3;}
+  .nav-links a{color:var(--gray);}
+  .nav-links a:hover, .nav-links a.is-on{color:var(--off-white);}
+  @media (min-width:720px){ .nav-links{display:flex;} }
+  .theme-switch{grid-column:2; justify-self:center; display:flex; align-items:center; gap:8px;}
+  .theme-glyph{color:var(--off-white); font-size:13px; font-variant-emoji:text; -webkit-text-fill-color:var(--off-white); user-select:none; pointer-events:none;}
+  .theme-toggle{appearance:none; border:0; background:transparent; padding:0; cursor:pointer;}
+  .theme-toggle-track{display:block; width:42px; height:22px; border:1px solid var(--hairline); border-radius:99px; position:relative;}
+  .theme-toggle-thumb{position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:50%; background:var(--off-white); transition:transform .28s cubic-bezier(.6,0,.2,1);}
+  html[data-theme="light"] .theme-toggle-thumb{transform:translateX(20px);}
+  html{--nav-h:68px; overflow-x:hidden;}
+  main{padding:120px 0 80px;}
+  .workspace{display:block;}
+  .rail{max-width:1120px; margin:0 auto; padding:0 32px;}
+  .page-intro{margin-bottom:0;}
+  .page-tag{font-family:var(--mono); font-size:12px; color:var(--gray); text-transform:uppercase; letter-spacing:.08em; margin-bottom:16px;}
+  h1{font-size:clamp(2rem, 5vw, 3.2rem); font-weight:700; letter-spacing:-0.02em; margin-bottom:12px;}
+  .lead{color:var(--gray); max-width:52ch; line-height:1.65; margin-bottom:48px;}
+  .work-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(min(100%, 320px), 320px));
+    gap:18px 20px;
+    justify-content:start;
+    transition:gap .35s ease;
+  }
+  .work-card{
+    display:block; width:320px; max-width:100%;
+    border:1px solid var(--hairline); overflow:hidden;
+    scroll-margin-top:12px;
+    transition:border-color .3s ease, transform .3s ease, background .3s ease, width .35s ease;
+  }
+  .work-card:hover{border-color:var(--lift-strong); background:var(--lift); transform:translateY(-3px);}
+  .work-card.is-active{border-color:var(--off-white); background:var(--lift);}
+  .work-card img{
+    display:block; width:320px; max-width:100%; height:180px; aspect-ratio:16/9;
+    object-fit:cover; object-position:center top;
+    filter:grayscale(0.12) contrast(1.03);
+  }
+  @media (max-width:383px){
+    .work-card img,
+    .work-card-ph{height:auto;}
+  }
+  .work-card-ph{
+    width:320px; height:180px; max-width:100%;
+    display:flex; align-items:center; justify-content:center;
+    border-bottom:1px solid var(--hairline);
+    font-family:var(--mono); font-size:10.5px; color:var(--gray-dim);
+    text-transform:uppercase; letter-spacing:.08em;
+  }
+  .work-card.is-openable{cursor:pointer;}
+  .work-card.is-openable:focus-visible{outline:1.5px solid var(--off-white); outline-offset:3px;}
+  .work-card > div:last-child{padding:10px 12px 14px;}
+  .work-slug{display:block; font-family:var(--mono); font-size:10px; color:var(--gray-dim); text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px;}
+  .work-card h2{font-size:.95rem; font-weight:600; letter-spacing:-0.01em; line-height:1.3;}
+  .work-card p{color:var(--gray); font-size:.82rem; line-height:1.55; margin-top:6px;}
+  footer{
+    padding:26px 32px; display:flex; justify-content:space-between;
+    font-family:var(--mono); font-size:11px; color:var(--gray-dim);
+    text-transform:uppercase; letter-spacing:.06em;
+    border-top:1px solid var(--hairline);
+  }
+
+  .project-panel{
+    position:fixed;
+    top:var(--nav-h);
+    right:0;
+    width:75%;
+    height:calc(100vh - var(--nav-h));
+    overflow-y:auto;
+    background:var(--black);
+    color:var(--off-white);
+    border-left:1px solid var(--hairline);
+    transform:translateX(100%);
+    pointer-events:none;
+    z-index:90;
+    transition:transform .45s cubic-bezier(.2,.8,.2,1);
+  }
+  .project-close{
+    position:sticky; top:16px; float:right; z-index:2;
+    appearance:none; border:1px solid var(--hairline); background:var(--black);
+    color:var(--off-white); width:36px; height:36px; cursor:pointer;
+    font-family:var(--mono); font-size:18px; line-height:1;
+    margin:0 16px 0 0;
+  }
+  .project-close:hover{border-color:var(--off-white);}
+  .project-head{padding:28px 28px 8px; padding-right:64px;}
+  .project-head .work-slug{margin-bottom:8px;}
+  .project-head h2{
+    font-size:clamp(1.6rem, 3vw, 2.15rem);
+    font-weight:700; letter-spacing:-0.02em; line-height:1.15;
+  }
+  .project-live{
+    display:none;
+    margin-top:14px;
+    font-family:var(--mono); font-size:12px; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--off-white);
+    border-bottom:1px solid var(--hairline);
+  }
+  .project-live.is-on{display:inline-block;}
+  .project-live:hover{border-color:var(--off-white);}
+  .work-live{
+    display:inline-block;
+    margin-top:8px;
+    font-family:var(--mono); font-size:10.5px; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--gray);
+  }
+  .work-live:hover{color:var(--off-white);}
+  .project-slides{
+    position:relative;
+    margin:18px 28px 0;
+    border:1px solid var(--hairline);
+    background:#111;
+    aspect-ratio:16/9;
+    overflow:hidden;
+  }
+  .project-slides img{
+    display:block; width:100%; height:100%;
+    object-fit:contain; object-position:center;
+    background:#0a0a0a;
+  }
+  .slide-btn{
+    position:absolute; top:50%; transform:translateY(-50%);
+    appearance:none; border:1px solid var(--hairline); background:rgba(10,10,10,0.72);
+    color:var(--off-white); width:36px; height:36px; cursor:pointer;
+    font-family:var(--mono); font-size:16px;
+  }
+  .slide-btn:hover{border-color:var(--off-white);}
+  .slide-btn.prev{left:10px;}
+  .slide-btn.next{right:10px;}
+  .slide-btn:disabled{opacity:0.28; cursor:default;}
+  .slide-meta{
+    position:absolute; right:12px; bottom:10px;
+    font-family:var(--mono); font-size:11px; letter-spacing:.08em;
+    color:var(--off-white); background:rgba(10,10,10,0.55); padding:4px 8px;
+  }
+  .slide-dots{
+    display:flex; justify-content:center; gap:6px;
+    padding:12px 28px 0;
+  }
+  .slide-dots button{
+    appearance:none; border:0; width:7px; height:7px; padding:0;
+    background:var(--gray-dim); cursor:pointer;
+  }
+  .slide-dots button.is-on{background:var(--off-white);}
+  .project-stack{
+    display:flex; flex-wrap:wrap; gap:8px;
+    padding:18px 28px 0;
+  }
+  .project-stack span{
+    font-family:var(--mono); font-size:10.5px; color:var(--gray);
+    border:1px solid var(--hairline); padding:5px 10px;
+    text-transform:uppercase; letter-spacing:.05em;
+  }
+  .project-details{padding:8px 28px 48px;}
+  .project-details h3{
+    font-family:var(--mono); font-size:11px; color:var(--gray);
+    text-transform:uppercase; letter-spacing:.1em;
+    margin:28px 0 10px;
+  }
+  .project-details p{
+    color:var(--gray); font-size:.95rem; line-height:1.7;
+    margin-bottom:12px; max-width:68ch;
+  }
+  .project-details p:last-child{margin-bottom:0;}
+
+  body.is-split{overflow:hidden;}
+  body.is-split main{padding:0;}
+  body.is-split .workspace{
+    position:fixed;
+    top:var(--nav-h); left:0; right:0; bottom:0;
+  }
+  body.is-split .rail{
+    position:absolute;
+    top:0; left:0; bottom:0;
+    width:25%;
+    max-width:none;
+    margin:0;
+    overflow-y:auto;
+    padding:16px 14px 24px;
+    border-right:1px solid var(--hairline);
+    background:var(--black);
+  }
+  body.is-split .page-intro{display:none;}
+  body.is-split .work-grid{
+    grid-template-columns:1fr;
+    gap:12px;
+  }
+  body.is-split .work-card{
+    width:100%;
+    transform:none;
+  }
+  body.is-split .work-card:hover{transform:none;}
+  body.is-split .work-card img,
+  body.is-split .work-card-ph{
+    width:100%;
+    height:auto;
+  }
+  body.is-split .work-card p,
+  body.is-split .work-live{display:none;}
+  body.is-split .project-panel{
+    transform:translateX(0);
+    pointer-events:auto;
+  }
+  body.is-split footer{display:none;}
+  @media (max-width:640px){
+    .project-head, .project-details{padding-left:18px; padding-right:18px;}
+    .project-head{padding-right:56px;}
+    .project-slides{margin-left:18px; margin-right:18px;}
+    .project-stack{padding-left:18px; padding-right:18px;}
+  }
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<nav>
+  <a class="nav-mark" href="/"><span class="nav-dot"></span> PRAVEEN</a>
+  <div class="theme-switch">
+    <span class="theme-glyph" aria-hidden="true">&#x263E;&#xFE0E;</span>
+    <button class="theme-toggle" id="themeToggle" type="button" role="switch" aria-checked="false" aria-label="Switch to light mode">
+      <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+    </button>
+    <span class="theme-glyph" aria-hidden="true">&#x2600;&#xFE0E;</span>
+  </div>
+  <div class="nav-links">
+    <a href="/#about">About</a>
+    <a href="/#experience">Career</a>
+    <a class="is-on" href="/completed_work/">Work</a>
+    <a href="/#contact">Contact</a>
+  </div>
+</nav>
+
+<main>
+  <div class="workspace">
+    <div class="rail">
+      <div class="page-intro">
+        <div class="page-tag">Completed work</div>
+        <h1>All builds.</h1>
+        <p class="lead">Click a thumbnail to open the write-up on this page — stills, stack, and the high-level / low-level design.</p>
+      </div>
+
+      <div class="work-grid">
+      <article class="work-card is-openable" id="classic_barbershop" data-project="classic_barbershop" role="button" tabindex="0">
+        <img src="classic_barbershop/thumb.webp" alt="Classic Barbershop" width="320" height="180">
+        <div>
+          <span class="work-slug">classic_barbershop</span>
+          <h2>Classic Barbershop</h2>
+          <p>Live barbershop product — React, TypeScript, and Vite on the front, Dockerized Django REST and PostgreSQL on the back, with a five-step booking wizard and staff admin.</p>
+          <a class="work-live" href="https://www.classicbarber.store/" target="_blank" rel="noopener noreferrer">Live site ↗</a>
+        </div>
+      </article>
+
+      <article class="work-card is-openable" id="dominex_engineering" data-project="dominex_engineering" role="button" tabindex="0">
+        <img src="dominex_engineering/thumb.webp" alt="Dominex Engineering" width="320" height="180">
+        <div>
+          <span class="work-slug">dominex_engineering</span>
+          <h2>Dominex Engineering</h2>
+          <p>Engineering studio site for Dominex — project presence built as a modern marketing frontend.</p>
+          <a class="work-live" href="https://dominex-automation.vercel.app/" target="_blank" rel="noopener noreferrer">Live site ↗</a>
+        </div>
+      </article>
+
+      <article class="work-card is-openable" id="excellements" data-project="excellements" role="button" tabindex="0">
+        <img src="excellements/thumb.webp" alt="Excellements" width="320" height="180">
+        <div>
+          <span class="work-slug">excellements</span>
+          <h2>Excellements</h2>
+          <p>Human performance intelligence platform for coaches and athletes — React + TypeScript SPA with a Django REST API and PostgreSQL.</p>
+          <a class="work-live" href="https://excellements.com/" target="_blank" rel="noopener noreferrer">Live site ↗</a>
+        </div>
+      </article>
+
+      <article class="work-card is-openable" id="omnigate_ai_portfolio" data-project="omnigate_ai_portfolio" role="button" tabindex="0">
+        <img src="omnigate_ai_portfolio/thumb.webp" alt="Omnigate AI Portfolio" width="320" height="180">
+        <div>
+          <span class="work-slug">omnigate_ai_portfolio</span>
+          <h2>Omnigate AI Portfolio</h2>
+          <p>Marketing and product site for Omnigate AI, alongside production agentic RAG work for healthcare IT.</p>
+          <a class="work-live" href="https://omnigate.dev/" target="_blank" rel="noopener noreferrer">Live site ↗</a>
+        </div>
+      </article>
+
+      <article class="work-card is-openable" id="production_pulse_monitor" data-project="production_pulse_monitor" role="button" tabindex="0">
+        <img src="production_pulse_monitor/thumb.webp" alt="Production Pulse Monitor" width="320" height="180">
+        <div>
+          <span class="work-slug">production_pulse_monitor</span>
+          <h2>Production Pulse Monitor</h2>
+          <p>Vite + React frontend with a FastAPI backend and SQLite — production monitoring deployed on Vercel and a VPS.</p>
+          <a class="work-live" href="https://production-pulse-monitor.vercel.app/" target="_blank" rel="noopener noreferrer">Live site ↗</a>
+        </div>
+      </article>
+
+      <article class="work-card" id="healthcare-support-bot">
+        <div class="work-card-ph" aria-hidden="true"></div>
+        <div>
+          <span class="work-slug">healthcare-support-bot</span>
+          <h2>Voice-Enabled Healthcare Support Bot</h2>
+          <p>Production agentic platform for hospital IT — MCP, FastAPI, retrieval-backed support, with live conversation tests graded by an LLM judge.</p>
+        </div>
+      </article>
+
+      <article class="work-card" id="procurement-explorer">
+        <div class="work-card-ph" aria-hidden="true"></div>
+        <div>
+          <span class="work-slug">procurement-explorer</span>
+          <h2>Procurement Data Explorer</h2>
+          <p>A SaaS product for structuring and querying procurement data at scale — from raw tables to a searchable interface for B2B buyers.</p>
+        </div>
+      </article>
+
+      <article class="work-card" id="knowledge-graph-pipeline">
+        <div class="work-card-ph" aria-hidden="true"></div>
+        <div>
+          <span class="work-slug">knowledge-graph-pipeline</span>
+          <h2>Knowledge Graph Pipeline</h2>
+          <p>An automated pipeline that transforms long-form video transcripts into a structured, navigable knowledge graph.</p>
+        </div>
+      </article>
+
+      <article class="work-card" id="field-app">
+        <div class="work-card-ph" aria-hidden="true"></div>
+        <div>
+          <span class="work-slug">field-app</span>
+          <h2>Cross-Platform Field App</h2>
+          <p>A React Native application with BLE hardware integration — bridging mobile software and embedded devices.</p>
+        </div>
+      </article>
+
+      <article class="work-card" id="robotic-wheelchair">
+        <div class="work-card-ph" aria-hidden="true"></div>
+        <div>
+          <span class="work-slug">robotic-wheelchair</span>
+          <h2>Smart Robotic Wheelchair</h2>
+          <p>Research platform for socially compliant navigation — ROS Kinetic, Hokuyo LiDAR, and algorithms for robot–human pairs.</p>
+        </div>
+      </article>
+      </div>
+    </div>
+
+    <aside class="project-panel" id="projectPanel" aria-labelledby="projectTitle">
+      <button class="project-close" id="projectClose" type="button" aria-label="Close project">×</button>
+      <div class="project-head">
+        <span class="work-slug" id="projectSlug"></span>
+        <h2 id="projectTitle"></h2>
+        <a class="project-live" id="projectLive" href="#" target="_blank" rel="noopener noreferrer">Live site ↗</a>
+      </div>
+      <div class="project-slides" id="projectSlides">
+        <img id="projectSlideImg" alt="" width="1280" height="720">
+        <button class="slide-btn prev" id="slidePrev" type="button" aria-label="Previous still">‹</button>
+        <button class="slide-btn next" id="slideNext" type="button" aria-label="Next still">›</button>
+        <span class="slide-meta" id="slideMeta"></span>
+      </div>
+      <div class="slide-dots" id="slideDots"></div>
+      <div class="project-stack" id="projectStack"></div>
+      <div class="project-details" id="projectDetails"></div>
+    </aside>
+  </div>
+</main>
+
+<footer>
+  <span>© 2026 Praveen Kehelella</span>
+  <a href="/#work">Back to home</a>
+</footer>
+
+<script>
+(function(){
+  const root = document.documentElement;
+  const toggle = document.getElementById('themeToggle');
+  function sync(){
+    const light = root.getAttribute('data-theme') === 'light';
+    toggle.setAttribute('aria-checked', light ? 'true' : 'false');
+    toggle.setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode');
+  }
+  sync();
+  toggle.addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    if (next === 'light') root.setAttribute('data-theme', 'light');
+    else root.removeAttribute('data-theme');
+    try { localStorage.setItem('theme', next); } catch (e) {}
+    sync();
+  });
+})();
+
+(function(){
+  const panel = document.getElementById('projectPanel');
+  const closeBtn = document.getElementById('projectClose');
+  const titleEl = document.getElementById('projectTitle');
+  const slugEl = document.getElementById('projectSlug');
+  const imgEl = document.getElementById('projectSlideImg');
+  const prevBtn = document.getElementById('slidePrev');
+  const nextBtn = document.getElementById('slideNext');
+  const metaEl = document.getElementById('slideMeta');
+  const dotsEl = document.getElementById('slideDots');
+  const stackEl = document.getElementById('projectStack');
+  const detailsEl = document.getElementById('projectDetails');
+  const liveEl = document.getElementById('projectLive');
+  const slidesWrap = document.getElementById('projectSlides');
+
+  let catalog = {};
+  let current = null;
+  let slideIndex = 0;
+
+  function hashId(){
+    return decodeURIComponent((location.hash || '').replace(/^#/, ''));
+  }
+
+  function setHash(id){
+    if (id){
+      if (location.hash !== '#' + id) history.pushState(null, '', '#' + id);
+    } else if (location.hash){
+      history.replaceState(null, '', location.pathname + location.search);
+    }
+  }
+
+  function markActive(id){
+    document.querySelectorAll('.work-card').forEach(card => {
+      card.classList.toggle('is-active', card.getAttribute('data-project') === id);
+    });
+    const active = document.querySelector('.work-card.is-active');
+    if (active) active.scrollIntoView({block:'nearest', behavior:'smooth'});
+  }
+
+  function renderSlide(){
+    if (!current) return;
+    const slides = current.slides || [];
+    const n = slides.length;
+    slidesWrap.hidden = n === 0;
+    dotsEl.hidden = n <= 1;
+    prevBtn.hidden = n <= 1;
+    nextBtn.hidden = n <= 1;
+    if (!n) return;
+    slideIndex = (slideIndex + n) % n;
+    const file = slides[slideIndex];
+    imgEl.src = current.slug + '/' + file;
+    imgEl.alt = current.title + ' still ' + (slideIndex + 1);
+    metaEl.textContent = String(slideIndex + 1).padStart(2,'0') + ' / ' + String(n).padStart(2,'0');
+    prevBtn.disabled = n <= 1;
+    nextBtn.disabled = n <= 1;
+    Array.from(dotsEl.children).forEach((dot, i) => {
+      dot.classList.toggle('is-on', i === slideIndex);
+    });
+  }
+
+  function fillPanel(project){
+    current = project;
+    slideIndex = 0;
+    slugEl.textContent = project.slug;
+    titleEl.textContent = project.title;
+    if (project.url){
+      liveEl.href = project.url;
+      liveEl.classList.add('is-on');
+    } else {
+      liveEl.removeAttribute('href');
+      liveEl.classList.remove('is-on');
+    }
+    stackEl.replaceChildren();
+    (project.stack || []).forEach(name => {
+      const tag = document.createElement('span');
+      tag.textContent = name;
+      stackEl.appendChild(tag);
+    });
+    detailsEl.replaceChildren();
+    (project.sections || []).forEach(section => {
+      const h = document.createElement('h3');
+      h.textContent = section.title;
+      detailsEl.appendChild(h);
+      (section.paragraphs || []).forEach(text => {
+        const p = document.createElement('p');
+        p.textContent = text;
+        detailsEl.appendChild(p);
+      });
+    });
+    dotsEl.replaceChildren();
+    (project.slides || []).forEach((_, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('aria-label', 'Still ' + (i + 1));
+      b.addEventListener('click', () => { slideIndex = i; renderSlide(); });
+      dotsEl.appendChild(b);
+    });
+    renderSlide();
+    panel.scrollTop = 0;
+  }
+
+  function openProject(id, fromHash){
+    const project = catalog[id];
+    if (!project) return;
+    fillPanel(project);
+    document.body.classList.add('is-split');
+    markActive(id);
+    if (!fromHash) setHash(id);
+  }
+
+  function closeProject(fromPop){
+    if (!document.body.classList.contains('is-split')) return;
+    document.body.classList.remove('is-split');
+    markActive('');
+    if (!fromPop) setHash('');
+    current = null;
+  }
+
+  closeBtn.addEventListener('click', () => closeProject(false));
+  prevBtn.addEventListener('click', () => { slideIndex -= 1; renderSlide(); });
+  nextBtn.addEventListener('click', () => { slideIndex += 1; renderSlide(); });
+
+  document.addEventListener('keydown', (e) => {
+    if (!document.body.classList.contains('is-split')) return;
+    if (e.key === 'Escape'){ e.preventDefault(); closeProject(false); }
+    if (e.key === 'ArrowLeft'){ e.preventDefault(); slideIndex -= 1; renderSlide(); }
+    if (e.key === 'ArrowRight'){ e.preventDefault(); slideIndex += 1; renderSlide(); }
+  });
+
+  document.querySelectorAll('[data-project]').forEach(card => {
+    const id = card.getAttribute('data-project');
+    const activate = () => openProject(id, false);
+    card.addEventListener('click', activate);
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        activate();
+      }
+    });
+  });
+  document.querySelectorAll('.work-live').forEach(link => {
+    link.addEventListener('click', (e) => e.stopPropagation());
+  });
+
+  window.addEventListener('popstate', () => {
+    const id = hashId();
+    if (id && catalog[id]) openProject(id, true);
+    else closeProject(true);
+  });
+
+  fetch('details.json', {cache:'no-store'})
+    .then(r => r.json())
+    .then(data => {
+      catalog = data || {};
+      const id = hashId();
+      if (id && catalog[id]) openProject(id, true);
+    })
+    .catch(() => {});
+})();
+</script>
+</body>
+</html>

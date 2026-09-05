@@ -1,0 +1,263 @@
+{
+  "classic_barbershop": {
+    "title": "Classic Barbershop",
+    "slug": "classic_barbershop",
+    "url": "https://www.classicbarber.store/",
+    "slides": [
+      "classic_barber_shop_1.png",
+      "classic_barber_shop_booking_1.png",
+      "classic_barber_shop_booking_2.png",
+      "classic_barber_shop_booking_3.png"
+    ],
+    "stack": [
+      "React 18",
+      "TypeScript",
+      "Vite",
+      "Tailwind CSS",
+      "Django 5",
+      "Django REST Framework",
+      "PostgreSQL",
+      "Gunicorn",
+      "Docker Compose",
+      "Vercel"
+    ],
+    "sections": [
+      {
+        "title": "Overview",
+        "paragraphs": [
+          "A live barbershop product: a public marketing site and a five-step booking wizard. I treated it as a product, not a page — anonymous readers and people who actually book have different latency and consistency needs.",
+          "The UI sits on a production-shaped Django stack: Compose, Gunicorn, Postgres, and split settings. TypeScript domain types are the contract the API is built against, so the client and the models cannot drift."
+        ]
+      },
+      {
+        "title": "High-level design",
+        "paragraphs": [
+          "Two deployables, two runtimes. The marketing site is a static artifact. Bookings go through an API with a real database so two staff members can share one day’s board without last-write-wins theatre.",
+          "That split is the HLD. Marketing bytes are cacheable and cheap to invalidate. Bookings are not — they need a single writer, migrations, and backups. Putting both in one Django monolith would have coupled a content site’s deploy cadence to a database migration.",
+          "The wizard is a short, named sequence of steps. Static hosting does not need a catch-all for those client routes; deep links still work."
+        ]
+      },
+      {
+        "title": "Low-level design",
+        "paragraphs": [
+          "Frontend is a typed SPA: marketing pages and the booking flow live in feature folders so they do not share CSS or state by accident. Domain types live in one module so the API client cannot drift from the models Django exposes.",
+          "Backend settings are split by environment. Production turns debug off and pins the hosts the app will answer. TLS is terminated in front of Django, not inside the application process.",
+          "Compose has a local file and a production override. Same images, different process model."
+        ]
+      },
+      {
+        "title": "Why these decisions",
+        "paragraphs": [
+          "Almost all traffic is anonymous reads of the marketing site; writes are sparse and must be durable. Postgres is the right store the moment two people can edit the same day’s board — SQLite would serialize that badly under multiple workers.",
+          "I locked the booking UX and the TypeScript contract before freezing the schema. That is cheaper than migrating Postgres every time a step changes."
+        ]
+      }
+    ]
+  },
+  "excellements": {
+    "title": "Excellements",
+    "slug": "excellements",
+    "url": "https://excellements.com/",
+    "slides": ["1.png", "2.png", "3.png"],
+    "stack": [
+      "React 18",
+      "TypeScript",
+      "Vite",
+      "React Router 7",
+      "Tailwind CSS",
+      "Recharts",
+      "Django 5",
+      "DRF",
+      "PostgreSQL",
+      "LiveKit",
+      "Nginx",
+      "Gunicorn",
+      "Docker Compose"
+    ],
+    "sections": [
+      {
+        "title": "Overview",
+        "paragraphs": [
+          "A human-performance platform with two products in one binary: a coach console (clients, cognition, schedule, telehealth, messages) and an athlete console (own metrics, games, booking, video). Role is chosen at registration and then drives what the UI offers, not just the theme.",
+          "Operational paths — clients, cognitive sessions, scheduling, video rooms, messages — hit PostgreSQL through Django REST. Charts that do not have a write path do not pretend to be live."
+        ]
+      },
+      {
+        "title": "High-level design",
+        "paragraphs": [
+          "One Compose graph: Nginx-served SPA, Gunicorn/Django, Postgres. Local and production keep the same path prefix so the client code path does not change between laptop and the host.",
+          "Identity is email and password, with a role on the user. Trainers own client profiles; a trainee account is useful only after it is linked to a profile the trainer already created.",
+          "Telehealth is LiveKit, not a homegrown WebRTC mesh. Video media never transits the Django process."
+        ]
+      },
+      {
+        "title": "Low-level design",
+        "paragraphs": [
+          "Foreign keys connect clients to trainers, sessions to both parties, messages between users, and cognitive results as append-only rows that roll up onto the client record.",
+          "Registration collects role in a second step so we do not create the wrong kind of account for an address that already exists.",
+          "Cognitive games run in the browser and POST a result payload. Scoring on the client is acceptable for training games; the durable record and the trainer’s charts are stored server-side."
+        ]
+      },
+      {
+        "title": "Why these decisions",
+        "paragraphs": [
+          "The SPA is the product, not a third-party consumer. One origin keeps the client simple.",
+          "LiveKit as a sidecar keeps WebRTC out of the WSGI workers. Django still decides who is on a session because that question is already answered there.",
+          "Role at registration is cheaper than a later migration when someone signed up as the wrong kind of user."
+        ]
+      }
+    ]
+  },
+  "production_pulse_monitor": {
+    "title": "Production Pulse Monitor",
+    "slug": "production_pulse_monitor",
+    "url": "https://production-pulse-monitor.vercel.app/",
+    "slides": [],
+    "stack": [
+      "Vite",
+      "React",
+      "FastAPI",
+      "SQLite",
+      "Docker",
+      "Nginx",
+      "Let's Encrypt",
+      "Vercel"
+    ],
+    "sections": [
+      {
+        "title": "Overview",
+        "paragraphs": [
+          "An operations monitor: a Vite/React console talking to a FastAPI service. A small operator set signs in; task data lives in SQLite on a Docker volume."
+        ]
+      },
+      {
+        "title": "High-level design",
+        "paragraphs": [
+          "Monorepo, two runtimes, one git history. The public build is the frontend only. Backend Docker files stay out of the static host’s build graph.",
+          "The API is a single container. TLS is issued in front of the image, not inside it."
+        ]
+      },
+      {
+        "title": "Low-level design",
+        "paragraphs": [
+          "The operator set is small and not self-serve, so users are not a SQL table. Rotating an operator does not require a rebuild or a migration.",
+          "SQLite on a volume: one writer, local durability, trivial backup. FastAPI talks to it synchronously; this is a pulse board, not a multi-region ledger.",
+          "Config-only changes restart the container; image rebuild is for code."
+        ]
+      },
+      {
+        "title": "Why these decisions",
+        "paragraphs": [
+          "SQLite over Postgres here is a capacity decision, not a skill gap. The write rate is human operators, the deployment is one VM, and another database process does not buy correctness. If we outgrow a single writer, the storage seam is already a path — swap the engine, keep the FastAPI surface.",
+          "A handful of named operators and no public registration matches the product. A user table would add a migration story and an admin UI this board does not need."
+        ]
+      }
+    ]
+  },
+  "omnigate_ai_portfolio": {
+    "title": "Omnigate AI Portfolio",
+    "slug": "omnigate_ai_portfolio",
+    "url": "https://omnigate.dev/",
+    "slides": [
+      "omnigate_ai_1.png",
+      "omnigate_ai_2.png",
+      "omnigate_ai_3.png",
+      "omnigate_ai_4.png",
+      "omnigate_ai_5.png",
+      "omnigate_ai_6.png",
+      "omnigate_ai_7.png",
+      "omnigate_ai_8.png"
+    ],
+    "stack": [
+      "Vite",
+      "React",
+      "CSS design tokens",
+      "Nginx",
+      "Multi-stage Docker",
+      "Certbot / Let's Encrypt"
+    ],
+    "sections": [
+      {
+        "title": "Overview",
+        "paragraphs": [
+          "The public design system and marketing site for Omnigate AI — dark, lime-accented, video-led. This is frontend architecture under product constraints: one accent, two type families, alternating light/dark bands, and a hero that must stay readable over a full-bleed motion background.",
+          "It is a static SPA in production (multi-stage Vite build, Nginx image). No application database. The interesting design work is the token layer, the stacking context, and keeping large media on an origin we control."
+        ]
+      },
+      {
+        "title": "High-level design",
+        "paragraphs": [
+          "A design-token document is the source of truth: background, text, muted, accent, and hairline. Components consume tokens, not scattered hex. Light bands invert the ground but keep the same accent and the same pairing (Space Grotesk + IBM Plex Mono). That is HLD for a brand: one accent across atmospheres so the site cannot drift into a second palette.",
+          "Hero composition is three layers: video, a gradient shade, then UI. The video plays once, muted, then holds the last frame — no loop. Shade exists so type contrast is an overlay problem, not a filter-on-the-file problem.",
+          "Production: Node build stage, Nginx runtime. Public HTTPS is terminated in front of the container."
+        ]
+      },
+      {
+        "title": "Low-level design",
+        "paragraphs": [
+          "Type scale is clamp-based so the headline can move from a phone to a wide display without a second stylesheet. Tracking tightens on display type and opens on mono labels — nav reads as instrumentation, headlines as brand.",
+          "Breakpoints are behavioral, not decorative: the desktop nav collapses, the secondary action drops, and the featured widget leaves absolute placement and joins document flow so it cannot cover the CTA.",
+          "Motion is short and named. Hover on the featured widget only widens the arrow gap. The constraint is intentional: motion is hierarchy, not a second product.",
+          "Media is copied into the image at build time. The image is large because of video; that is accepted rather than lazy-loaded from a third-party CDN we do not control."
+        ]
+      },
+      {
+        "title": "Why these decisions",
+        "paragraphs": [
+          "A marketing site for an agentic-AI studio has to look like the systems it sells: sparse, tokenized, no purple-glow stock. Encoding that in CSS variables and a written do/don’t list is the same move as an API style guide — the next page cannot invent a second palette without violating the contract.",
+          "Video under UI is a compositing problem. Putting shade in its own layer means we can tune readability without re-encoding the file. Playing once and holding the last frame avoids the cheap loop that fights the copy.",
+          "The app image stays dumb: it serves files. Certificates and renewals stay in front of it."
+        ]
+      }
+    ]
+  },
+  "dominex_engineering": {
+    "title": "Dominex Engineering",
+    "slug": "dominex_engineering",
+    "url": "https://dominex-automation.vercel.app/",
+    "slides": [
+      "dominex_1.png",
+      "dominex_2.png",
+      "dominex_3.png",
+      "dominex_4.png",
+      "dominex_5.png",
+      "dominex_6.png"
+    ],
+    "stack": [
+      "Vite",
+      "TypeScript",
+      "React",
+      "Tailwind CSS",
+      "shadcn/ui"
+    ],
+    "sections": [
+      {
+        "title": "Overview",
+        "paragraphs": [
+          "A marketing frontend for an engineering studio. The stack is Vite, TypeScript, React, Tailwind, and shadcn/ui — a component-first SPA rather than a CMS. There is no application backend in this repo; the job is presence, information architecture, and a system of primitives that can take real content without a redesign."
+        ]
+      },
+      {
+        "title": "High-level design",
+        "paragraphs": [
+          "A static SPA: one JS bundle, client rendering, no server session. That is the right HLD when the pages are studio narrative, project stills, and contact — not bookings or role-based access. Adding a backend here would have introduced an origin, a database, and a deploy for content that editors can change as code.",
+          "shadcn/ui on Tailwind is the component strategy: copy-owned primitives, tokens in CSS, composition in React. TypeScript keeps the page props honest as sections accumulate."
+        ]
+      },
+      {
+        "title": "Low-level design",
+        "paragraphs": [
+          "Vite for the dev server and the production build — the same pipeline as the other SPAs in this set, so local tooling and deploy mental models transfer. Tailwind at the leaf, shadcn for anything that is a control so padding, focus rings, and dark-mode variants do not fork per section.",
+          "The screenshots are the studio UI: multi-section landing, project narrative, and contact. There is no application API because the site does not need one."
+        ]
+      },
+      {
+        "title": "Why these decisions",
+        "paragraphs": [
+          "For a studio site, time-to-iterate on layout beats an editorial CMS. Engineers already live in git; content-as-code is an operational fit. A blog or careers section would be a second bounded context — not a reason to start with a monolith.",
+          "shadcn over a heavier kit because the visual language needed to stay close to the rest of my work: sharp corners, hairlines, no pill-default chrome. Owning the component source means a focus state is a file we can grep, not a theme override fight."
+        ]
+      }
+    ]
+  }
+}

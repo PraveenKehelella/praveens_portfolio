@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "about": true,
+    "experience": true,
+    "work": true,
+    "demos": false,
+    "products": false,
+    "terminal": true,
+    "contact": true
+  }
+}
