@@ -120,7 +120,9 @@
   }
   .work-card.is-openable{cursor:pointer;}
   .work-card.is-openable:focus-visible{outline:1.5px solid var(--off-white); outline-offset:3px;}
-  .work-card > div:last-child{padding:10px 12px 14px;}
+  .work-card > a:not(.work-live){display:block; color:inherit;}
+  .work-card > div:last-child,
+  .work-card > a:not(.work-live) > div:last-child{padding:10px 12px 14px;}
   .work-slug{display:block; font-family:var(--mono); font-size:10px; color:var(--gray-dim); text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px;}
   .work-card h2{font-size:.95rem; font-weight:600; letter-spacing:-0.01em; line-height:1.3;}
   .work-card p{color:var(--gray); font-size:.82rem; line-height:1.55; margin-top:6px;}
@@ -396,13 +398,15 @@
         </div>
       </article>
 
-      <article class="work-card" id="robotic-wheelchair">
-        <div class="work-card-ph" aria-hidden="true"></div>
-        <div>
-          <span class="work-slug">robotic-wheelchair</span>
-          <h2>Smart Robotic Wheelchair</h2>
-          <p>Research platform for socially compliant navigation — ROS Kinetic, Hokuyo LiDAR, and algorithms for robot–human pairs.</p>
-        </div>
+      <article class="work-card is-openable" id="robotic-wheelchair" data-project="robotic-wheelchair">
+        <a href="#robotic-wheelchair">
+          <div class="work-card-ph" aria-hidden="true"></div>
+          <div>
+            <span class="work-slug">robotic-wheelchair</span>
+            <h2>Smart Robotic Wheelchair</h2>
+            <p>Custom ROS wheelchair — Hokuyo lidar, Kinect, walking-speed hardware. Side-by-side companion navigation and a new orthogonal-crossing model, validated with human trajectory studies.</p>
+          </div>
+        </a>
       </article>
       </div>
     </div>
@@ -469,9 +473,16 @@
   let catalog = {};
   let current = null;
   let slideIndex = 0;
+  let pendingId = null;
 
   function hashId(){
     return decodeURIComponent((location.hash || '').replace(/^#/, ''));
+  }
+
+  function lookup(id){
+    if (!id) return null;
+    if (catalog[id]) return catalog[id];
+    return Object.values(catalog).find(p => p && p.slug === id) || null;
   }
 
   function setHash(id){
@@ -553,20 +564,31 @@
   }
 
   function openProject(id, fromHash){
-    const project = catalog[id];
-    if (!project) return;
+    const project = lookup(id);
+    if (!project){
+      pendingId = id;
+      return;
+    }
+    pendingId = null;
     fillPanel(project);
     document.body.classList.add('is-split');
-    markActive(id);
-    if (!fromHash) setHash(id);
+    markActive(project.slug || id);
+    if (!fromHash) setHash(project.slug || id);
   }
 
   function closeProject(fromPop){
     if (!document.body.classList.contains('is-split')) return;
     document.body.classList.remove('is-split');
     markActive('');
+    pendingId = null;
     if (!fromPop) setHash('');
     current = null;
+  }
+
+  function syncFromLocation(){
+    const id = hashId();
+    if (id) openProject(id, true);
+    else closeProject(true);
   }
 
   closeBtn.addEventListener('click', () => closeProject(false));
@@ -595,18 +617,15 @@
     link.addEventListener('click', (e) => e.stopPropagation());
   });
 
-  window.addEventListener('popstate', () => {
-    const id = hashId();
-    if (id && catalog[id]) openProject(id, true);
-    else closeProject(true);
-  });
+  window.addEventListener('popstate', syncFromLocation);
+  window.addEventListener('hashchange', syncFromLocation);
 
   fetch('details.json', {cache:'no-store'})
     .then(r => r.json())
     .then(data => {
       catalog = data || {};
-      const id = hashId();
-      if (id && catalog[id]) openProject(id, true);
+      const id = pendingId || hashId();
+      if (id) openProject(id, true);
     })
     .catch(() => {});
 })();

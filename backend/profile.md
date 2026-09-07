@@ -20,7 +20,7 @@ Python AI engine extracting insights from videos (helped acquire customers). Zer
 
 ## Research Assistant — SLIIT (Colombo)
 09/2018 — 03/2022
-Designed a smart robotic wheelchair for socially compliant navigation. Validated side-by-side robot-human navigation. Taught robotics and IoT labs for undergraduate and postgraduate students.
+Built a custom ROS wheelchair (Hokuyo lidar, Kinect, walking-speed chassis) for human-aware navigation. Side-by-side companion models on hardware, plus a new orthogonal-crossing decision model from lidar trajectory studies. Taught robotics and IoT labs for undergraduate and postgraduate students.
 
 ## Trainee Electronic Engineer — Samson Rubber Industries; Hayleys Fentons
 2016 — 2019

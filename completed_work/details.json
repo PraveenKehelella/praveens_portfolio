@@ -259,5 +259,53 @@
         ]
       }
     ]
+  },
+  "robotic-wheelchair": {
+    "title": "Smart Robotic Wheelchair",
+    "slug": "robotic-wheelchair",
+    "slides": [],
+    "stack": [
+      "ROS Kinetic",
+      "Ubuntu 16.04",
+      "Hokuyo UST-10LX",
+      "Kinect 2.0",
+      "SolidWorks",
+      "V-REP",
+      "Differential drive",
+      "Custom wheel encoders"
+    ],
+    "sections": [
+      {
+        "title": "Overview",
+        "paragraphs": [
+          "A custom robotic wheelchair — Wheelie — built at SLIIT as a research platform for human-aware navigation. The hardware had to move at walking speed, carry a person, and still be a robot: mapping, localization, obstacle avoidance, and a human in the loop. Commercial TurtleBots top out around 0.2 m/s. People walk at 1.5–2.5 m/s. That gap is why the platform exists.",
+          "Two navigation problems sat on that hardware. Side-by-side travel with a caregiver, where comfort is a formation you keep, not a bumper you bounce off. And orthogonal crossings — two agents on perpendicular paths who must yield or go without a hard stop. The second is common in corridors and under-served in HRI; classic robotics either slams the brakes or guns it. Neither is tolerable if someone is sitting on the robot."
+        ]
+      },
+      {
+        "title": "High-level design",
+        "paragraphs": [
+          "The chassis is a configurable differential-drive wheelchair designed in SolidWorks and stress-tested in V-REP before metal: load distribution, wheelbase, emergency-brake pitch, laser-based obstacle avoidance. Drive wheels and rear casters can be remounted so turning radius, slip, and rider comfort can be measured instead of guessed.",
+          "Software is ROS Kinetic on Ubuntu 16.04. The navigation stack owns the map and the pose. A Hokuyo UST-10LX is the primary rangefinder; a Kinect 2.0 adds depth for people. Smaller lidars sit as proximity alerts. Motors shipped without encoders, so the odometry wheel is a custom encoder disk read by a fork IR sensor. An emergency kill cuts motor power.",
+          "Side-by-side work takes a utility model of walking pairs — relative distance and angle, obstacles, sub-goals, and a vision term for whether the pair can still see each other around an object — and runs it on hardware. Orthogonal-crossing work is a decision model of our own: yield or proceed from oncoming speed, own speed, speed changes, path deviation, and distance to the intersection, but only after both agents enter a geometrically defined mutual field of view."
+        ]
+      },
+      {
+        "title": "Low-level design",
+        "paragraphs": [
+          "Human tracks come from lidar clusters on legs, not a motion-capture hall. Side-by-side trials ran in a 360 × 166 cm corridor with a centered obstacle 2 m from the start. Obstacle height was the independent variable (12 / 24 / 36 cm against a 166 cm companion). When the object blocked mutual view, utility dropped and the pair should break formation; a short obstacle did not. That is the vision factor made measurable.",
+          "Orthogonal-crossing data was collected at a hall junction at SLIIT, staged as a three- or four-way crossing so neither person sees the other until a calculated point on the trajectory. That mutual-vicinity boundary was derived from hallway width and walking speed, then checked on the floor. A Hokuyo UST-10LX logged every trajectory.",
+          "Natural walking speed is not a constant. Twelve people walked a 7 m marked line; each trace has an initial relaxation, a steady-state velocity, and a final slowdown. That steady-state number is what you need if two people are supposed to arrive at the same point at the same time. Ten of them (matched walking speeds and gaits, same institutional rank so yielding was not just deference) then ran the crossing. The wheelchair later stood in as one agent, driven with the same motion grammar the walking trials had produced."
+        ]
+      },
+      {
+        "title": "Why these decisions",
+        "paragraphs": [
+          "A wheelchair is the right robot for this research. It has to be socially acceptable to the rider and to the person walking next to it. Sudden stops and spikes in acceleration fail that test even if they avoid a collision. Matching human speed is not a vanity metric — a platform that cannot keep up cannot validate a walking-pair model.",
+          "Simulation is where the side-by-side utility model had lived. Real lidar has glare and aliasing; IMUs pick up chassis vibration; encoder ticks skip when a wheel slips in a turn. Putting the model on a configurable chassis is how you find which of those matter.",
+          "Orthogonal crossings needed a new model because stop-or-sprint is not how people actually share a junction, and the literature on perpendicular human–robot pairs was thin. Recording yield versus go against measured speeds, distances, and a hard FOV constraint is the contribution: a decision process you can put on a companion robot instead of a reflexive halt."
+        ]
+      }
+    ]
   }
 }

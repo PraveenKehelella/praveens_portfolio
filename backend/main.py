@@ -164,7 +164,11 @@ class SafeStaticFiles(StaticFiles):
         )
         if blocked:
             raise StarletteHTTPException(status_code=404)
-        return await super().get_response(path, scope)
+        response = await super().get_response(path, scope)
+        media = (getattr(response, "media_type", None) or "").split(";")[0]
+        if media in {"text/html", "application/json"} or lowered.endswith((".html", ".json")):
+            response.headers["Cache-Control"] = "no-store"
+        return response
 
 
 app.mount("/", SafeStaticFiles(directory=str(ROOT_DIR), html=True), name="static")

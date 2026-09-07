@@ -71,7 +71,7 @@
   {
     "id": "robotic-wheelchair",
     "title": "Smart Robotic Wheelchair",
-    "summary": "Research platform for socially compliant side-by-side navigation — ROS Kinetic, Hokuyo LiDAR, and new algorithms for robot–human pairs, designed and built at SLIIT.",
-    "tags": ["ROS", "LiDAR", "Research"]
+    "summary": "Custom ROS wheelchair built at SLIIT — Hokuyo lidar, Kinect, and walking-speed hardware for side-by-side companion navigation and a new orthogonal-crossing model, validated with human trajectory studies.",
+    "tags": ["ROS", "LiDAR", "HRI", "Research"]
   }
 ]
