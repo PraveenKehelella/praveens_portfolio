@@ -10,6 +10,7 @@ from typing import AsyncIterator
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from openai import AsyncOpenAI
@@ -30,13 +31,32 @@ MAX_HISTORY_TURNS = 6
 MAX_CONVERSATIONS = 256
 CONVERSATION_TTL_S = 60 * 30
 
-limiter = Limiter(key_func=get_remote_address)
+
+def _csv_env(name: str, default: str) -> list[str]:
+    return [part.strip() for part in os.getenv(name, default).split(",") if part.strip()]
+
+
+def _client_ip(request: Request) -> str:
+    # Host Nginx is the only public entry; trust the first forwarded hop.
+    forwarded = request.headers.get("x-forwarded-for")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    real_ip = request.headers.get("x-real-ip")
+    if real_ip:
+        return real_ip.strip()
+    return get_remote_address(request)
+
+
+limiter = Limiter(key_func=_client_ip)
 app = FastAPI(title="Praveen portfolio API", docs_url=None, redoc_url=None)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+_hosts = list(dict.fromkeys(["localhost", "127.0.0.1", *_csv_env("ALLOWED_HOSTS", "")]))
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=_hosts)
+_cors = _csv_env("CORS_ORIGINS", "*")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_cors,
     allow_methods=["POST", "GET"],
     allow_headers=["Content-Type"],
 )
@@ -95,6 +115,11 @@ def _remember(conversation_id: str, user: str, assistant: str) -> None:
 
 def _sse(payload: dict) -> str:
     return f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
+
+
+@app.get("/healthz")
+async def healthz() -> dict[str, bool]:
+    return {"ok": True}
 
 
 @app.post("/api/chat")

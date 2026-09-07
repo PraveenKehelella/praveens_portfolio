@@ -31,7 +31,7 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Work case studies live at `
 docker compose up --build
 ```
 
-Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Stop with Ctrl+C, or `docker compose down`.
+Open [http://127.0.0.1:8040](http://127.0.0.1:8040) (localhost only). Use `HOST_PORT=8000` in `.env` if you want the old local port. Stop with Ctrl+C, or `docker compose down`.
 
 `.env` is gitignored. Do not commit a real key. `.env.example` is the public template.
 
